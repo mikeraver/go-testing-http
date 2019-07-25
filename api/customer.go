@@ -8,9 +8,7 @@ import (
 	"net/http"
 )
 
-type CustomerAPI struct {}
-
-func (c CustomerAPI) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+func CreateCustomerHandler(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 

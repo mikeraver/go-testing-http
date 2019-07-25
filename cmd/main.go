@@ -8,7 +8,7 @@ import (
 
 func main() {
 
-    http.Handle("/customer", api.CustomerAPI{})
+    http.HandleFunc("/customer", api.CreateCustomerHandler)
 
     log.Println("starting server on port 8080")
     log.Fatal(http.ListenAndServe(":8080", nil))
