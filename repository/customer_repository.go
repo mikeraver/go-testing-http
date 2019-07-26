@@ -7,17 +7,22 @@ import (
 	"log"
 )
 
-type CustomerRepository struct {}
-
-func NewRepository() *CustomerRepository {
-	return &CustomerRepository{}
+type CustomerRepository interface {
+	Insert(customer model.Customer) *model.Customer
 }
 
-func (c CustomerRepository) Insert(customer model.Customer) string {
+type customerRepository struct {}
+
+func NewCustomerRepository() *customerRepository {
+	return &customerRepository{}
+}
+
+func (c customerRepository) Insert(customer model.Customer) *model.Customer {
 	fmt.Printf("Inserting new customer record: name=[%v, %v]", customer.LastName, customer.FirstName)
 	id, err := uuid.NewRandom()
 	if err != nil {
 		log.Fatal("All is lost")
 	}
-	return id.String()
+	customer.Id = id.String()
+	return &customer
 }

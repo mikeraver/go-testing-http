@@ -4,23 +4,36 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/mikeraver/go-testing-http/model"
-	"github.com/mikeraver/go-testing-http/repository"
 	"github.com/mikeraver/go-testing-http/service"
 	"log"
 	"net/http"
 )
 
 type CustomerApi struct {
-	service *service.CustomerService
+	customerService service.CustomerService
 }
 
-func (c *CustomerApi) Init() {
-	fmt.Println("Initializing Customer API")
-	repo := repository.NewRepository()
-	c.service = service.NewService(repo)
+func NewCustomerApi() *CustomerApi {
+	return &CustomerApi{}
 }
 
-func(c *CustomerApi) CreateCustomerHandler(w http.ResponseWriter, r *http.Request) {
+func (c *CustomerApi) RegisterHandlers() {
+	http.HandleFunc("/customer", c.createCustomerHandler)
+}
+
+func (c *CustomerApi) SetCustomerService(customerService service.CustomerService) {
+	c.customerService = customerService
+}
+
+func (c *CustomerApi) getCustomerService() service.CustomerService {
+	if c.customerService == nil {
+		c.customerService = service.NewCustomerService()
+	}
+
+	return c.customerService
+}
+
+func(c *CustomerApi) createCustomerHandler(w http.ResponseWriter, r *http.Request) {
 
 	decoder := json.NewDecoder(r.Body)
 
@@ -30,7 +43,7 @@ func(c *CustomerApi) CreateCustomerHandler(w http.ResponseWriter, r *http.Reques
 		log.Fatalf("failed to marshal the customer: %v", err)
 	}
 
-	newCustomer := c.service.CreateCustomer(customer)
+	newCustomer := c.getCustomerService().CreateCustomer(customer)
 	//CustomerApi{}.Service
 	//cid, err := uuid.NewRandom()
 	//if err != nil {
@@ -38,6 +51,8 @@ func(c *CustomerApi) CreateCustomerHandler(w http.ResponseWriter, r *http.Reques
 	//}
 
 	//customer.Id = cid.String()
+
+	fmt.Printf("\nOUTPUT: %v END_OUTPUT\n", newCustomer)
 
 	encoder := json.NewEncoder(w)
 	err = encoder.Encode(newCustomer)

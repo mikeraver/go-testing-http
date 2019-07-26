@@ -23,8 +23,11 @@ func TestCreateCustomer(t *testing.T) {
 		t.Fatal(err)
 	}
 
+	customerApi := api.CustomerApi{}
+	customerApi.Init()
+
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(api.CreateCustomerHandler)
+	handler := http.HandlerFunc(customerApi.CreateCustomerHandler)
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
