@@ -1,8 +1,7 @@
-package main
+package api
 
 import (
 	"encoding/json"
-	"github.com/mikeraver/go-testing-http/api"
 	"github.com/mikeraver/go-testing-http/model"
 	"net/http"
 	"net/http/httptest"
@@ -23,11 +22,10 @@ func TestCreateCustomer(t *testing.T) {
 		t.Fatal(err)
 	}
 
-	customerApi := api.CustomerApi{}
-	customerApi.Init()
+	customerApi := CustomerApi{}
 
 	rr := httptest.NewRecorder()
-	handler := http.HandlerFunc(customerApi.CreateCustomerHandler)
+	handler := http.HandlerFunc(customerApi.createCustomerHandler)
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusOK {
